@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventMate - Attendance</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7ff, #eef1ff);
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 28px 6%;
+            box-shadow: 0 5px 20px rgba(70, 60, 130, 0.25);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            opacity: 0.85;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            font-size: 27px;
+            color: #292d3e;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #777;
+            font-size: 15px;
+        }
+
+        .selector-card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(50, 50, 100, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .selector-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .selector-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 21px;
+        }
+
+        .selector-header h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .selector-header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafbff;
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        select:hover,
+        select:focus {
+            border-color: #667eea;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 6px 20px rgba(50, 50, 100, 0.07);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .total-icon {
+            background: #eef0ff;
+            color: #667eea;
+        }
+
+        .present-icon {
+            background: #e8f8ef;
+            color: #20a464;
+        }
+
+        .absent-icon {
+            background: #ffecec;
+            color: #dc3545;
+        }
+
+        .stat-info p {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .stat-info h3 {
+            font-size: 23px;
+            color: #333;
+        }
+
+        #message {
+            text-align: center;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .attendance-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(50, 50, 100, 0.08);
+            overflow: hidden;
+        }
+
+        .attendance-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attendance-header h3 {
+            color: #333;
+            font-size: 19px;
+        }
+
+        .attendance-header span {
+            font-size: 13px;
+            color: #888;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9ff;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 18px 15px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+        .student-number {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef0ff;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .student-email {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .status-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-option {
+            position: relative;
+        }
+
+        .status-option input {
+            display: none;
+        }
+
+        .status-option label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 13px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+        .present-label {
+            color: #1d8b55;
+        }
+
+        .absent-label {
+            color: #d33a48;
+        }
+
+        .status-option input:checked + .present-label {
+            background: #e8f8ef;
+            border-color: #4ac987;
+            color: #16834d;
+        }
+
+        .status-option input:checked + .absent-label {
+            background: #ffecee;
+            border-color: #ee6a76;
+            color: #c92d3b;
+        }
+
+        .submit-container {
+            padding: 25px;
+            text-align: right;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .loading {
+            padding: 50px;
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 750px;
+            }
+
+            .submit-container {
+                text-align: center;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<header>
+
+    <div class="header-content">
+
+        <div class="brand">
+
+            <h1>🎓 EventMate</h1>
+
+            <p>
+                Event Attendance Management
+            </p>
+
+        </div>
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+        >
+            ← Admin Dashboard
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="page-title">
+
+        <h2>
+            Mark Attendance
+        </h2>
+
+        <p>
+            Manage attendance for students registered
+            for your college events.
+        </p>
+
+    </div>
+
+
+    <div class="selector-card">
+
+        <div class="selector-header">
+
+            <div class="selector-icon">
+                📅
+            </div>
+
+            <div>
+
+                <h3>
+                    Select Event
+                </h3>
+
+                <p>
+                    Choose an event to view registered students
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <select
+            id="eventSelect"
+            onchange="loadStudents()"
+        >
+
+            <option value="">
+                -- Select an Event --
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div id="message"></div>
+
+
+    <div
+        class="stats"
+        id="stats"
+        style="display: none;"
+    >
+
+        <div class="stat-card">
+
+            <div class="stat-icon total-icon">
+                👥
+            </div>
+
+            <div class="stat-info">
+
+                <p>
+                    Total Students
+                </p>
+
+                <h3 id="totalCount">
+                    0
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon present-icon">
+                ✓
+            </div>
+
+            <div class="stat-info">
+
+                <p>
+                    Present
+                </p>
+
+                <h3 id="presentCount">
+                    0
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon absent-icon">
+                ✕
+            </div>
+
+            <div class="stat-info">
+
+                <p>
+                    Absent
+                </p>
+
+                <h3 id="absentCount">
+                    0
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <form id="attendanceForm">
+
+        <div
+            class="attendance-card"
+            id="studentContainer"
+        >
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    📋
+                </div>
+
+                <h3>
+                    No Event Selected
+                </h3>
+
+                <p>
+                    Select an event above to view
+                    registered students.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="submit-container"
+            id="submitContainer"
+            style="display: none;"
+        >
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                ✓ Submit Attendance
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    const API_URL =
+        "http://localhost:5000";
+
+
+    function checkAdmin() {
+
+        const token =
+            localStorage.getItem("token");
+
+        const userString =
+            localStorage.getItem("user");
+
+
+        if (!token || !userString) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+            return false;
+        }
+
+
+        const user =
+            JSON.parse(userString);
+
+
+        const role =
+            String(user.role)
+                .trim()
+                .toLowerCase();
+
+
+        if (role !== "admin") {
+
+            alert(
+                "Access denied. Admin only."
+            );
+
+            window.location.href =
+                "homepage1.html";
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    async function loadEvents() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/events`
+                );
+
+
+            const events =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    events.message ||
+                    "Unable to load events"
+                );
+            }
+
+
+            const select =
+                document.getElementById(
+                    "eventSelect"
+                );
+
+
+            events.forEach(event => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    event._id;
+
+
+                option.textContent =
+                    event.title;
+
+
+                select.appendChild(
+                    option
+                );
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                "Unable to load events.",
+                "red"
+            );
+        }
+    }
+
+
+    async function loadStudents() {
+
+        const eventId =
+            document.getElementById(
+                "eventSelect"
+            ).value;
+
+
+        const container =
+            document.getElementById(
+                "studentContainer"
+            );
+
+
+        const submitContainer =
+            document.getElementById(
+                "submitContainer"
+            );
+
+
+        const stats =
+            document.getElementById(
+                "stats"
+            );
+
+
+        submitContainer.style.display =
+            "none";
+
+
+        stats.style.display =
+            "none";
+
+
+        if (!eventId) {
+
+            container.innerHTML = `
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📋
+                    </div>
+
+                    <h3>
+                        No Event Selected
+                    </h3>
+
+                    <p>
+                        Select an event above to view
+                        registered students.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML = `
+
+            <div class="loading">
+                ⏳ Loading registered students...
+            </div>
+
+        `;
+
+
+        const token =
+            localStorage.getItem("token");
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/registrations/event/${eventId}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            const registrations =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    registrations.message ||
+                    "Unable to load students"
+                );
+            }
+
+
+            if (
+                !registrations ||
+                registrations.length === 0
+            ) {
+
+                container.innerHTML = `
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            👥
+                        </div>
+
+                        <h3>
+                            No Registered Students
+                        </h3>
+
+                        <p>
+                            No students have registered
+                            for this event yet.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            let html = `
+
+                <div class="attendance-header">
+
+                    <div>
+
+                        <h3>
+                            Registered Students
+                        </h3>
+
+                        <span>
+                            ${registrations.length}
+                            student(s) registered
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Email</th>
+                            <th>Attendance</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+            `;
+
+
+            registrations.forEach(
+                (registration, index) => {
+
+                    const user =
+                        registration.user;
+
+
+                    html += `
+
+                        <tr>
+
+                            <td>
+
+                                <div
+                                    class="student-number"
+                                >
+                                    ${index + 1}
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <div
+                                    class="student-name"
+                                >
+                                    ${user.name}
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <div
+                                    class="student-email"
+                                >
+                                    ${user.email}
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <div
+                                    class="status-options"
+                                >
+
+                                    <div
+                                        class="status-option"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            id="present-${user._id}"
+                                            name="status-${user._id}"
+                                            value="Present"
+                                            required
+                                        >
+
+                                        <label
+                                            for="present-${user._id}"
+                                            class="present-label"
+                                        >
+                                            ✓ Present
+                                        </label>
+
+                                    </div>
+
+
+                                    <div
+                                        class="status-option"
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            id="absent-${user._id}"
+                                            name="status-${user._id}"
+                                            value="Absent"
+                                        >
+
+                                        <label
+                                            for="absent-${user._id}"
+                                            class="absent-label"
+                                        >
+                                            ✕ Absent
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+                }
+            );
+
+
+            html += `
+
+                    </tbody>
+
+                </table>
+            `;
+
+
+            container.innerHTML =
+                html;
+
+
+            stats.style.display =
+                "grid";
+
+
+            submitContainer.style.display =
+                "block";
+
+
+            updateStats();
+
+
+            document
+                .querySelectorAll(
+                    'input[type="radio"]'
+                )
+                .forEach(input => {
+
+                    input.addEventListener(
+                        "change",
+                        updateStats
+                    );
+
+                });
+
+        } catch (error) {
+
+            console.error(error);
+
+            container.innerHTML = `
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Something went wrong
+                    </h3>
+
+                    <p>
+                        ${error.message}
+                    </p>
+
+                </div>
+
+            `;
+        }
+    }
+
+
+    function updateStats() {
+
+        const selected =
+            document.querySelectorAll(
+                'input[type="radio"]:checked'
+            );
+
+
+        let present = 0;
+        let absent = 0;
+
+
+        selected.forEach(input => {
+
+            if (input.value === "Present") {
+                present++;
+            }
+
+            if (input.value === "Absent") {
+                absent++;
+            }
+
+        });
+
+
+        const total =
+            document.querySelectorAll(
+                'input[value="Present"]'
+            ).length;
+
+
+        document.getElementById(
+            "totalCount"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "presentCount"
+        ).textContent = present;
+
+
+        document.getElementById(
+            "absentCount"
+        ).textContent = absent;
+    }
+
+
+    document
+        .getElementById("attendanceForm")
+        .addEventListener(
+            "submit",
+            async function(e) {
+
+                e.preventDefault();
+
+
+                const eventId =
+                    document.getElementById(
+                        "eventSelect"
+                    ).value;
+
+
+                if (!eventId) {
+
+                    alert(
+                        "Please select an event first."
+                    );
+
+                    return;
+                }
+
+
+                const token =
+                    localStorage.getItem("token");
+
+
+                if (!token) {
+
+                    alert(
+                        "Please login again."
+                    );
+
+                    window.location.href =
+                        "login.html";
+
+                    return;
+                }
+
+
+                const selectedStatuses =
+                    document.querySelectorAll(
+                        'input[type="radio"]:checked'
+                    );
+
+
+                const allStudents =
+                    document.querySelectorAll(
+                        'input[name^="status-"]'
+                    );
+
+
+                const studentIds =
+                    new Set();
+
+
+                allStudents.forEach(input => {
+
+                    const userId =
+                        input.name.replace(
+                            "status-",
+                            ""
+                        );
+
+                    studentIds.add(userId);
+
+                });
+
+
+                if (
+                    selectedStatuses.length !==
+                    studentIds.size
+                ) {
+
+                    alert(
+                        "Please mark Present or Absent for every student."
+                    );
+
+                    return;
+                }
+
+
+                const submitButton =
+                    document.querySelector(
+                        ".submit-btn"
+                    );
+
+
+                submitButton.disabled =
+                    true;
+
+
+                submitButton.textContent =
+                    "⏳ Saving Attendance...";
+
+
+                try {
+
+                    const requests =
+                        Array.from(
+                            selectedStatuses
+                        ).map(radio => {
+
+                            const userId =
+                                radio.name.replace(
+                                    "status-",
+                                    ""
+                                );
+
+
+                            return fetch(
+                                `${API_URL}/attendance`,
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json",
+
+                                        "Authorization":
+                                            `Bearer ${token}`
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            userId:
+                                                userId,
+
+                                            eventId:
+                                                eventId,
+
+                                            status:
+                                                radio.value
+                                        })
+                                }
+                            );
+                        });
+
+
+                    const responses =
+                        await Promise.all(
+                            requests
+                        );
+
+
+                    const results =
+                        await Promise.all(
+                            responses.map(
+                                response =>
+                                    response.json()
+                            )
+                        );
+
+
+                    const failed =
+                        responses.some(
+                            response =>
+                                !response.ok
+                        );
+
+
+                    if (failed) {
+
+                        console.error(
+                            "Attendance errors:",
+                            results
+                        );
+
+
+                        const tokenError =
+                            results.find(
+                                result =>
+                                    result.message ===
+                                    "Invalid or expired token"
+                            );
+
+
+                        if (tokenError) {
+
+                            alert(
+                                "Your session has expired. Please login again."
+                            );
+
+                            localStorage.removeItem(
+                                "token"
+                            );
+
+                            localStorage.removeItem(
+                                "user"
+                            );
+
+                            window.location.href =
+                                "login.html";
+
+                            return;
+                        }
+
+
+                        alert(
+                            "Some attendance records could not be saved."
+                        );
+
+                        return;
+                    }
+
+
+                    alert(
+                        "✅ Attendance saved successfully!"
+                    );
+
+
+                    await loadStudents();
+
+                } catch (error) {
+
+                    console.error(
+                        "Attendance submission error:",
+                        error
+                    );
+
+
+                    alert(
+                        "Unable to save attendance. Please try again."
+                    );
+
+                } finally {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        "✓ Submit Attendance";
+                }
+
+            }
+        );
+
+
+    function goBack() {
+
+        window.location.href =
+            "admin.html";
+    }
+
+
+    function showMessage(
+        text,
+        color
+    ) {
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.style.color =
+            color;
+
+
+        message.textContent =
+            text;
+    }
+
+
+    if (checkAdmin()) {
+
+        loadEvents();
+
+    }
+
+</script>
+
+</body>
+
+</html>

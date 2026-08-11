@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Payments - EventMate</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        header {
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            text-align: center;
+
+            padding: 35px 20px;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+
+            margin: 35px auto;
+        }
+
+        .back {
+            display: inline-block;
+
+            margin-bottom: 25px;
+
+            color: #667eea;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .payment-card {
+
+            background: white;
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.08);
+        }
+
+        .payment-card h2 {
+            margin-top: 0;
+
+            color: #333;
+        }
+
+        .payment-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .info-box {
+
+            background: #f7f8ff;
+
+            padding: 15px;
+
+            border-radius: 10px;
+        }
+
+        .label {
+
+            color: #777;
+
+            font-size: 14px;
+
+            margin-bottom: 5px;
+        }
+
+        .value {
+
+            font-weight: bold;
+
+            color: #333;
+        }
+
+        .paid {
+
+            color: #16834d;
+
+            background: #e8f8ef;
+
+            padding: 7px 15px;
+
+            border-radius: 20px;
+
+            display: inline-block;
+        }
+
+        .pending {
+
+            color: #996c00;
+
+            background: #fff4cc;
+
+            padding: 7px 15px;
+
+            border-radius: 20px;
+
+            display: inline-block;
+        }
+
+        .empty {
+
+            background: white;
+
+            padding: 60px 20px;
+
+            text-align: center;
+
+            border-radius: 15px;
+        }
+
+        .loading {
+
+            text-align: center;
+
+            padding: 50px;
+
+            color: #667eea;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>
+        My Payments
+    </h1>
+
+    <p>
+        View your EventMate payment history
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <a
+        href="homepage1.html"
+        class="back"
+    >
+        ← Back to Home
+    </a>
+
+
+    <div id="paymentsContainer">
+
+        <div class="loading">
+            Loading payments...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "http://localhost:5000";
+
+
+async function loadPayments() {
+
+    const token =
+        localStorage.getItem("token");
+
+
+    if (!token) {
+
+        alert(
+            "Please login first."
+        );
+
+        window.location.href =
+            "login.html";
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/payments/my`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const payments =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                payments.message ||
+                "Unable to load payments"
+            );
+
+        }
+
+
+        const container =
+            document.getElementById(
+                "paymentsContainer"
+            );
+
+
+        if (
+            !payments ||
+            payments.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="empty">
+
+                    <h2>
+                        No Payments Yet
+                    </h2>
+
+                    <p>
+                        You haven't made any
+                        event payments yet.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        payments.forEach(payment => {
+
+            const event =
+                payment.event || {};
+
+
+            const status =
+                payment.status || "Pending";
+
+
+            const statusClass =
+                status.toLowerCase() === "paid"
+                    ? "paid"
+                    : "pending";
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "payment-card";
+
+
+            card.innerHTML = `
+
+                <h2>
+                    ${
+                        event.title ||
+                        "Event"
+                    }
+                </h2>
+
+
+                <div class="payment-info">
+
+                    <div class="info-box">
+
+                        <div class="label">
+                            Amount
+                        </div>
+
+                        <div class="value">
+                            ₹${payment.amount}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="label">
+                            Payment Method
+                        </div>
+
+                        <div class="value">
+                            ${
+                                payment.paymentMethod ||
+                                "Not Selected"
+                            }
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="label">
+                            Status
+                        </div>
+
+                        <div class="value">
+
+                            <span
+                                class="${statusClass}"
+                            >
+                                ${status}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="label">
+                            Payment Date
+                        </div>
+
+                        <div class="value">
+
+                            ${
+                                payment.createdAt
+                                    ? new Date(
+                                        payment.createdAt
+                                    ).toLocaleString()
+                                    : "-"
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Payment history error:",
+            error
+        );
+
+
+        document.getElementById(
+            "paymentsContainer"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                <h2>
+                    Unable to load payments
+                </h2>
+
+                <p>
+                    Please try again.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+loadPayments();
+
+</script>
+
+
+</body>
+
+</html>

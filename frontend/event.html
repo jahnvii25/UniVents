@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EventMate - Events</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        header {
+            background: linear-gradient(
+                135deg,
+                #667eea,
+                #764ba2
+            );
+
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .events-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(280px, 1fr)
+                );
+
+            gap: 25px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+
+            box-shadow:
+                0 5px 15px
+                rgba(0, 0, 0, 0.08);
+
+            transition: 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .event-content {
+            padding: 20px;
+        }
+
+        .event-content h3 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .event-content p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .event-btn {
+            width: 100%;
+            padding: 12px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: linear-gradient(
+                135deg,
+                #667eea,
+                #764ba2
+            );
+
+            color: white;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .event-btn:hover {
+            opacity: 0.9;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                rgba(0, 0, 0, 0.6);
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
+
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: white;
+
+            width: 100%;
+            max-width: 600px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            border-radius: 15px;
+
+            padding: 30px;
+
+            position: relative;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+
+            right: 15px;
+            top: 10px;
+
+            border: none;
+            background: none;
+
+            font-size: 30px;
+
+            cursor: pointer;
+
+            color: #555;
+        }
+
+        .modal-box h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .event-img {
+            width: 100%;
+            max-height: 300px;
+
+            object-fit: cover;
+
+            border-radius: 10px;
+
+            margin: 15px 0;
+        }
+
+        .register-btn {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>EventMate</h1>
+
+    <p>
+        Explore College Events
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <h2 class="page-title">
+        Upcoming Events
+    </h2>
+
+    <div
+        id="eventsGrid"
+        class="events-grid"
+    >
+    </div>
+
+</div>
+
+
+<div
+    id="eventModal"
+    class="modal"
+>
+
+    <div
+        id="modalContent"
+        class="modal-box"
+    >
+    </div>
+
+</div>
+
+
+<script>
+
+let eventDetails = {};
+
+
+async function loadEvents() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/events"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load events"
+            );
+
+        }
+
+
+        const events =
+            await response.json();
+
+
+        const grid =
+            document.getElementById(
+                "eventsGrid"
+            );
+
+
+        grid.innerHTML = "";
+
+
+        if (
+            !events ||
+            events.length === 0
+        ) {
+
+            grid.innerHTML = `
+                <div class="empty">
+                    <h3>No events available</h3>
+                    <p>
+                        Please check again later.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        events.forEach(event => {
+eventDetails[event.title] = {
+
+    id: event._id,
+
+    img: event.image,
+
+    desc: event.description,
+
+    register: event.registerLink,
+
+    eventFee: event.eventFee || 0
+
+};
+ 
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "event-card";
+
+
+            let image =
+                event.image;
+
+
+            if (!image) {
+
+                image =
+                    "event-default.jpg";
+
+            }
+
+
+            card.innerHTML = `
+
+                <img
+                    class="event-image"
+                    src="${image}"
+                    alt="${event.title}"
+                    onerror="
+                        this.src='event-default.jpg'
+                    "
+                >
+
+                <div class="event-content">
+
+                    <h3>
+                        ${event.title}
+                    </h3>
+
+                    <p>
+                        📍 ${event.venue}
+                    </p>
+
+                    <p>
+                        📅 ${
+                            new Date(
+                                event.date
+                            ).toLocaleDateString()
+                        }
+                    </p>
+
+                    <p>
+                        ${event.description || ""}
+                    </p>
+
+                    <button
+                        class="event-btn"
+                        onclick="
+                            showModal(
+                                '${event.title.replace(
+                                    /'/g,
+                                    "\\'"
+                                )}'
+                            )
+                        "
+                    >
+                        View Event
+                    </button>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        });
+
+
+        console.log(
+            "Events loaded from MongoDB:",
+            eventDetails
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading events:",
+            error
+        );
+
+
+        document.getElementById(
+            "eventsGrid"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                <h3>
+                    Unable to load events
+                </h3>
+
+                <p>
+                    Please make sure the backend
+                    is running.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+loadEvents();
+
+
+function showModal(event) {
+
+    const details =
+        eventDetails[event];
+
+
+    if (!details) {
+
+        alert(
+            "Event details are still loading. Please try again."
+        );
+
+        return;
+    }
+
+
+    document.getElementById(
+        "eventModal"
+    ).style.display = "flex";
+
+
+    document.getElementById(
+        "modalContent"
+    ).innerHTML = `
+
+        <button
+            class="close-btn"
+            onclick="closeModal()"
+        >
+            &times;
+        </button>
+
+
+        <h2>
+            ${event}
+        </h2>
+
+
+        <img
+            src="${details.img || "event-default.jpg"}"
+            class="event-img"
+            alt="${event}"
+            onerror="
+                this.src='event-default.jpg'
+            "
+        >
+
+
+        <div
+            style="
+                margin: 20px 0;
+                color: #333;
+                font-size: 1.10em;
+            "
+        >
+
+            ${details.desc || ""}
+
+        </div>
+
+
+        <p>
+
+            <strong>
+                Registration Fee:
+            </strong>
+
+            ₹${details.eventFee || 0}
+
+        </p>
+
+
+        <button
+            class="register-btn"
+            onclick="
+                registerForEvent(
+                    '${details.id}',
+${details.eventFee || 0}
+                    )
+            "
+        >
+            Register Now
+        </button>
+
+    `;
+
+}
+
+
+async function registerForEvent(
+    eventId,
+    amount
+) {
+
+    const token =
+        localStorage.getItem(
+            "token"
+        );
+
+
+    if (!token) {
+
+        alert(
+            "Please login before registering for an event."
+        );
+
+
+        window.location.href =
+            "login.html";
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `http://localhost:5000/registrations/${eventId}`,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Authorization":
+                            `Bearer ${token}`
+
+                    }
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "Registration failed"
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "Successfully registered for the event! 🎉"
+        );
+
+
+        window.location.href =
+            `paymentpage.html?eventId=${eventId}&amount=${amount}`;
+
+
+    } catch (error) {
+
+        console.error(
+            "Registration error:",
+            error
+        );
+
+
+        alert(
+            "Unable to connect to the server."
+        );
+
+    }
+
+}
+
+
+function closeModal() {
+
+    document.getElementById(
+        "eventModal"
+    ).style.display =
+        "none";
+
+}
+
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "eventModal"
+            );
+
+
+        if (
+            event.target === modal
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

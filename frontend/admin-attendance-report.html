@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventMate - Attendance Report</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7ff, #eef1ff);
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 28px 6%;
+            box-shadow: 0 5px 20px rgba(70, 60, 130, 0.25);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .brand p {
+            opacity: 0.85;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .title {
+            margin-bottom: 25px;
+        }
+
+        .title h2 {
+            font-size: 28px;
+            color: #292d3e;
+            margin-bottom: 7px;
+        }
+
+        .title p {
+            color: #777;
+        }
+
+        .selector {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(50,50,100,0.08);
+            margin-bottom: 25px;
+        }
+
+        .selector h3 {
+            margin-bottom: 15px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fafbff;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(50,50,100,0.07);
+            text-align: center;
+        }
+
+        .stat h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .stat p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .total {
+            color: #667eea;
+        }
+
+        .present {
+            color: #20a464;
+        }
+
+        .absent {
+            color: #dc3545;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(50,50,100,0.08);
+            overflow: hidden;
+        }
+
+        .report-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .report-header h3 {
+            font-size: 19px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9ff;
+            padding: 15px;
+            text-align: left;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 16px 15px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #fafbff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #e8f8ef;
+            color: #16834d;
+        }
+
+        .status-absent {
+            background: #ffecee;
+            color: #c92d3b;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .empty h3 {
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #888;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .report-card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 700px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="header-content">
+
+        <div class="brand">
+            <h1>🎓 EventMate</h1>
+            <p>Attendance Reports</p>
+        </div>
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+        >
+            ← Admin Dashboard
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="title">
+
+        <h2>Attendance Report</h2>
+
+        <p>
+            View attendance records of students for your events.
+        </p>
+
+    </div>
+
+
+    <div class="selector">
+
+        <h3>📅 Select Event</h3>
+
+        <select
+            id="eventSelect"
+            onchange="loadAttendance()"
+        >
+
+            <option value="">
+                -- Select an Event --
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div
+        class="stats"
+        id="stats"
+        style="display:none;"
+    >
+
+        <div class="stat">
+
+            <h3
+                class="total"
+                id="totalCount"
+            >
+                0
+            </h3>
+
+            <p>Total Students</p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3
+                class="present"
+                id="presentCount"
+            >
+                0
+            </h3>
+
+            <p>Present</p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3
+                class="absent"
+                id="absentCount"
+            >
+                0
+            </h3>
+
+            <p>Absent</p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="report-card"
+        id="reportCard"
+    >
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                📊
+            </div>
+
+            <h3>No Event Selected</h3>
+
+            <p>
+                Select an event to view attendance.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const API_URL =
+        "http://localhost:5000";
+
+
+    function checkAdmin() {
+
+        const token =
+            localStorage.getItem("token");
+
+        const userString =
+            localStorage.getItem("user");
+
+
+        if (!token || !userString) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+            return false;
+        }
+
+
+        const user =
+            JSON.parse(userString);
+
+
+        const role =
+            String(user.role)
+                .trim()
+                .toLowerCase();
+
+
+        if (role !== "admin") {
+
+            alert(
+                "Access denied. Admin only."
+            );
+
+            window.location.href =
+                "homepage1.html";
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    async function loadEvents() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/events`
+                );
+
+
+            const events =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    events.message ||
+                    "Unable to load events"
+                );
+
+            }
+
+
+            const select =
+                document.getElementById(
+                    "eventSelect"
+                );
+
+
+            events.forEach(event => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    event._id;
+
+                option.textContent =
+                    event.title;
+
+                select.appendChild(
+                    option
+                );
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to load events."
+            );
+
+        }
+    }
+
+
+    async function loadAttendance() {
+
+        const eventId =
+            document.getElementById(
+                "eventSelect"
+            ).value;
+
+
+        const reportCard =
+            document.getElementById(
+                "reportCard"
+            );
+
+
+        const stats =
+            document.getElementById(
+                "stats"
+            );
+
+
+        stats.style.display =
+            "none";
+
+
+        if (!eventId) {
+
+            reportCard.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        No Event Selected
+                    </h3>
+
+                    <p>
+                        Select an event to view attendance.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        reportCard.innerHTML = `
+
+            <div class="loading">
+                ⏳ Loading attendance...
+            </div>
+
+        `;
+
+
+        const token =
+            localStorage.getItem("token");
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/attendance/event/${eventId}`,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            const attendance =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    attendance.message ||
+                    "Unable to load attendance"
+                );
+
+            }
+
+
+            if (
+                !attendance ||
+                attendance.length === 0
+            ) {
+
+                reportCard.innerHTML = `
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            👥
+                        </div>
+
+                        <h3>
+                            No Attendance Records
+                        </h3>
+
+                        <p>
+                            Attendance has not been marked
+                            for this event yet.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            let present = 0;
+            let absent = 0;
+
+
+            attendance.forEach(record => {
+
+                if (
+                    record.status ===
+                    "Present"
+                ) {
+                    present++;
+                }
+
+                if (
+                    record.status ===
+                    "Absent"
+                ) {
+                    absent++;
+                }
+
+            });
+
+
+            document.getElementById(
+                "totalCount"
+            ).textContent =
+                attendance.length;
+
+
+            document.getElementById(
+                "presentCount"
+            ).textContent =
+                present;
+
+
+            document.getElementById(
+                "absentCount"
+            ).textContent =
+                absent;
+
+
+            stats.style.display =
+                "grid";
+
+
+            let html = `
+
+                <div class="report-header">
+
+                    <h3>
+                        📋 Attendance Details
+                    </h3>
+
+                </div>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+            `;
+
+
+            attendance.forEach(
+                (record, index) => {
+
+                    const user =
+                        record.user;
+
+
+                    const statusClass =
+                        record.status ===
+                        "Present"
+                            ? "status-present"
+                            : "status-absent";
+
+
+                    const statusIcon =
+                        record.status ===
+                        "Present"
+                            ? "✓"
+                            : "✕";
+
+
+                    const date =
+                        new Date(
+                            record.createdAt
+                        ).toLocaleDateString(
+                            "en-IN"
+                        );
+
+
+                    html += `
+
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ${user.name}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${user.email}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="status ${statusClass}"
+                                >
+                                    ${statusIcon}
+                                    ${record.status}
+                                </span>
+
+                            </td>
+
+                            <td>
+                                ${date}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            );
+
+
+            html += `
+
+                    </tbody>
+
+                </table>
+
+            `;
+
+
+            reportCard.innerHTML =
+                html;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            reportCard.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        Something went wrong
+                    </h3>
+
+                    <p>
+                        ${error.message}
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    function goBack() {
+
+        window.location.href =
+            "admin.html";
+
+    }
+
+
+    if (checkAdmin()) {
+
+        loadEvents();
+
+    }
+
+</script>
+
+</body>
+
+</html>

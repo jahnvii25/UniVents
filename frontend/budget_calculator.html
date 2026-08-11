@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Budget Calculator - EventMate</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .home-link {
+            display: block;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .home-link a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.2s;
+        }
+        
+        .home-link a:hover {
+            color: #ffd700;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+        
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .calculate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            display: none;
+        }
+        
+        .result-container.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .budget-item:last-child {
+            border-bottom: none;
+        }
+        
+        .budget-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .budget-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .total-budget {
+            font-size: 1.8em;
+            text-align: center;
+            margin-top: 20px;
+            color: #764ba2;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.2em;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-link">
+        <a href="homepage1.html">&larr; Back to Home</a>
+    </div>
+    
+    <div class="container">
+        <h1>💰 Budget Calculator</h1>
+        <p class="subtitle">Get AI-powered budget estimates for your college events</p>
+        
+        <div class="info-box">
+            <p><strong>ℹ️ How it works:</strong></p>
+            <p>Our ML model predicts budget based on event type, attendees, duration, and venue size.</p>
+        </div>
+        
+        <form id="budgetForm">
+            <div class="form-group">
+                <label for="eventType">Event Type</label>
+                <select id="eventType" name="eventType" required>
+                    <option value="">Select Event Type</option>
+                    <option value="Freshers Party">Freshers Party</option>
+                    <option value="Udhgosh">Udhgosh (Cultural Fest)</option>
+                    <option value="Saraswati Puja">Saraswati Puja</option>
+                    <option value="Dandiya Night">Dandiya Night</option>
+                    <option value="Mata Ki Chowki">Mata Ki Chowki</option>
+                    <option value="Annual Day">Annual Day</option>
+                    <option value="Farewell Party">Farewell Party</option>
+                    <option value="Sports Event">Sports Event</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="attendees">Expected Attendees</label>
+                <input type="number" id="attendees" name="attendees" min="10" max="10000" placeholder="e.g., 500" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="duration">Event Duration (hours)</label>
+                <input type="number" id="duration" name="duration" min="1" max="72" placeholder="e.g., 6" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="venueSize">Venue Size</label>
+                <select id="venueSize" name="venueSize" required>
+                    <option value="">Select Venue Size</option>
+                    <option value="Small">Small (< 200 people)</option>
+                    <option value="Medium">Medium (200-500 people)</option>
+                    <option value="Large">Large (500-1000 people)</option>
+                    <option value="Extra Large">Extra Large (> 1000 people)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="hasCatering">Catering Required?</label>
+                <select id="hasCatering" name="hasCatering" required>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="hasEntertainment">Professional Entertainment?</label>
+                <select id="hasEntertainment" name="hasEntertainment" required>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="calculate-btn" id="calculateBtn">
+                Calculate Budget
+            </button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <p>🔄 Calculating your budget...</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-title">📊 Estimated Budget Breakdown</div>
+            <div id="budgetBreakdown"></div>
+            <div class="total-budget" id="totalBudget"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:5000/api/predict-budget';
+        
+        document.getElementById('budgetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                event_type: document.getElementById('eventType').value,
+                attendees: parseInt(document.getElementById('attendees').value),
+                duration: parseInt(document.getElementById('duration').value),
+                venue_size: document.getElementById('venueSize').value,
+                has_catering: parseInt(document.getElementById('hasCatering').value),
+                has_entertainment: parseInt(document.getElementById('hasEntertainment').value)
+            };
+            
+            // Show loading, hide results and errors
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('resultContainer').classList.remove('show');
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('calculateBtn').disabled = true;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Failed to calculate budget');
+                }
+            } catch (error) {
+                showError('Unable to connect to server. Please make sure the backend is running.');
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('calculateBtn').disabled = false;
+            }
+        });
+        
+        function displayResults(data) {
+            const breakdownDiv = document.getElementById('budgetBreakdown');
+            breakdownDiv.innerHTML = '';
+            
+            // Display breakdown
+            for (const [key, value] of Object.entries(data.breakdown)) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'budget-item';
+                itemDiv.innerHTML = `
+                    <span class="budget-label">${formatLabel(key)}</span>
+                    <span class="budget-value">₹${value.toLocaleString('en-IN')}</span>
+                `;
+                breakdownDiv.appendChild(itemDiv);
+            }
+            
+            // Display total
+            document.getElementById('totalBudget').textContent = 
+                `Total Estimated Budget: ₹${data.total_budget.toLocaleString('en-IN')}`;
+            
+            document.getElementById('resultContainer').classList.add('show');
+        }
+        
+        function formatLabel(key) {
+            return key.split('_').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = `❌ ${message}`;
+            errorDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>

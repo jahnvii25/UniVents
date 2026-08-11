@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EventMate - Home</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7ff;
+            color: #292d3e;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            background:
+                rgba(20, 20, 35, 0.96);
+
+            backdrop-filter: blur(10px);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 14px 5%;
+
+            box-shadow:
+                0 4px 20px
+                rgba(0, 0, 0, 0.15);
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #8b9cff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #9ba8ff;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-name {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            border: none;
+            background: #667eea;
+            color: white;
+            padding: 9px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #586bd8;
+        }
+
+        /* HERO */
+.hero {
+    min-height: 470px;
+
+    background-image: url("b.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    color: white;
+    padding: 50px 20px;
+}
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #aeb8ff;
+        }
+
+        .hero p {
+        color: white;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            border: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary-btn {
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #555;
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* WELCOME */
+
+        .welcome-card {
+            margin-top: 30px;
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(50, 50, 100, 0.08);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+        .welcome-card h2 {
+            margin-bottom: 7px;
+            color: #292d3e;
+        }
+
+        .welcome-card p {
+            color: #777;
+        }
+
+        .admin-btn {
+            display: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            padding: 11px 18px;
+
+            border-radius: 9px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+        }
+
+        /* QUICK ACTIONS */
+
+        .section {
+            margin-top: 55px;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section-heading h2 {
+            font-size: 30px;
+            color: #292d3e;
+            margin-bottom: 8px;
+        }
+
+        .section-heading p {
+            color: #777;
+        }
+
+        .quick-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 20px;
+        }
+
+        .quick-card {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 16px;
+
+            text-align: center;
+
+            box-shadow:
+                0 7px 22px
+                rgba(50, 50, 100, 0.08);
+
+            transition: 0.3s;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .quick-icon {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .quick-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .quick-card p {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .quick-card button {
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        /* EVENTS */
+
+        .events-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(280px, 1fr)
+                );
+
+            gap: 22px;
+        }
+
+        .event-card {
+            background: white;
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 7px 22px
+                rgba(50, 50, 100, 0.08);
+
+            transition: 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .event-content {
+            padding: 20px;
+        }
+
+        .event-content h3 {
+            margin-bottom: 10px;
+            color: #292d3e;
+        }
+
+        .event-content p {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .event-date {
+            color: #667eea !important;
+            font-weight: 700;
+        }
+
+        .event-btn {
+            width: 100%;
+
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            padding: 11px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            padding: 30px;
+        }
+
+        /* HIGHLIGHTS */
+
+        .highlights-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 25px;
+        }
+
+        .highlight-box {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 7px 22px
+                rgba(50, 50, 100, 0.08);
+        }
+
+        .highlight-box ul {
+            list-style: none;
+        }
+
+        .highlight-box li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin: 15px 0;
+
+            color: #555;
+        }
+
+        .highlight-check {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* TEXT SECTIONS */
+
+        .info-card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 7px 22px
+                rgba(50, 50, 100, 0.08);
+        }
+
+        .info-card p {
+            color: #666;
+
+            line-height: 1.8;
+
+            font-size: 15px;
+        }
+
+        /* GALLERY */
+
+        .gallery-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 190px;
+
+            object-fit: cover;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 5px 15px
+                rgba(0, 0, 0, 0.1);
+
+            transition: 0.3s;
+        }
+
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+
+        /* CONTACT */
+
+        .contact-card {
+            background:
+                linear-gradient(
+                    135deg,
+                    #667eea,
+                    #764ba2
+                );
+
+            color: white;
+
+            padding: 35px;
+
+            border-radius: 18px;
+
+            text-align: center;
+        }
+
+        .contact-card h2 {
+            margin-bottom: 15px;
+        }
+
+        .contact-card p {
+            color: white;
+            margin: 8px 0;
+        }
+
+        /* FOOTER */
+
+        footer {
+            margin-top: 60px;
+
+            background: #171725;
+
+            color: white;
+
+            padding: 30px;
+
+            text-align: center;
+        }
+
+        footer p {
+            color: #aaa;
+            margin: 5px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .highlights-container {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .hero {
+                min-height: 420px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .welcome-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav>
+
+    <a
+        href="#home"
+        class="logo"
+    >
+        🎓 Event<span>Mate</span>
+    </a>
+
+
+    <div class="nav-links">
+
+        <a href="#home">
+            Home
+        </a>
+
+        <a href="#events">
+            Events
+        </a>
+
+        <a href="#about">
+            About
+        </a>
+
+        <a href="#gallery">
+            Gallery
+        </a>
+
+        <a href="#contact">
+            Contact
+        </a>
+
+    </div>
+
+
+    <div class="user-area">
+
+        <span
+            class="user-name"
+            id="userName"
+        >
+            Student
+        </span>
+
+        <button
+            class="logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<!-- HERO -->
+
+<section
+    class="hero"
+    id="home"
+>
+
+    <div class="hero-content">
+
+        <h1>
+            Welcome to
+            <span>EventMate</span>
+        </h1>
+
+        <p>
+            Your one-stop platform for discovering,
+            registering and participating in college
+            events and activities.
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="#events"
+                class="primary-btn"
+            >
+                Explore Events
+            </a>
+
+
+            <button
+                class="secondary-btn"
+                onclick="goToMyEvents()"
+            >
+                My Events
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="container">
+
+
+    <!-- WELCOME -->
+
+    <div class="welcome-card">
+
+        <div>
+
+            <h2 id="welcomeMessage">
+                Welcome!
+            </h2>
+
+            <p>
+                Manage your registrations
+                and attendance from one place.
+            </p>
+
+        </div>
+
+
+        <a
+            href="admin.html"
+            class="admin-btn"
+            id="adminButton"
+        >
+            👑 Admin Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="section">
+
+        <div class="section-heading">
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <p>
+                Everything you need in one place
+            </p>
+
+        </div>
+
+
+        <div class="quick-grid">
+
+
+            <div class="quick-card">
+
+                <div class="quick-icon">
+                    📅
+                </div>
+
+                <h3>
+                    Browse Events
+                </h3>
+
+                <p>
+                    Discover upcoming college
+                    events and activities.
+                </p>
+
+                <button
+                    onclick="scrollToEvents()"
+                >
+                    View Events
+                </button>
+
+            </div>
+
+
+            <div class="quick-card">
+
+                <div class="quick-icon">
+                    📝
+                </div>
+
+                <h3>
+                    My Events
+                </h3>
+
+                <p>
+                    View events you have
+                    registered for.
+                </p>
+
+                <button
+                    onclick="goToMyEvents()"
+                >
+                    My Registrations
+                </button>
+
+            </div>
+
+
+            <div class="quick-card">
+
+                <div class="quick-icon">
+                    📊
+                </div>
+
+                <h3>
+                    My Attendance
+                </h3>
+
+                <p>
+                    Check your attendance
+                    and percentage.
+                </p>
+
+                <button
+                    onclick="goToAttendance()"
+                >
+                    View Attendance
+                </button>
+
+            </div>
+
+
+            <div class="quick-card">
+
+                <div class="quick-icon">
+                    💳
+                </div>
+
+                <h3>
+                    Payments
+                </h3>
+
+                <p>
+                    Manage event payments
+                    and transactions.
+                </p>
+
+                <button
+                    onclick="goToPayments()"
+                >
+                    Make Payment
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- EVENTS -->
+
+    <section
+        class="section"
+        id="events"
+    >
+
+        <div class="section-heading">
+
+            <h2>
+                Upcoming Events
+            </h2>
+
+            <p>
+                Discover what's happening at your college
+            </p>
+
+        </div>
+
+
+        <div
+            class="events-grid"
+            id="eventsGrid"
+        >
+
+            <div class="loading">
+                ⏳ Loading events...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- HIGHLIGHTS -->
+
+    <section
+        class="section"
+        id="highlights"
+    >
+
+        <div class="section-heading">
+
+            <h2>
+                Our Highlights
+            </h2>
+
+            <p>
+                Explore the different activities
+                managed through EventMate.
+            </p>
+
+        </div>
+
+
+        <div class="highlights-container">
+
+
+            <div class="highlight-box">
+
+                <ul>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        College Fests
+                    </li>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        Cultural Events
+                    </li>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        Sports and Recreational Activities
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="highlight-box">
+
+                <ul>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        Annual Days and Farewell
+                    </li>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        Workshops and Seminars
+                    </li>
+
+                    <li>
+                        <span class="highlight-check">
+                            ✓
+                        </span>
+                        Special Guest Events
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+
+    <section
+        class="section"
+        id="about"
+    >
+
+        <div class="section-heading">
+
+            <h2>
+                About EventMate
+            </h2>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <p>
+                EventMate is designed to simplify event
+                planning and management for college events.
+                Whether you're hosting a cultural program,
+                competition, technical fest or fresher's
+                party, EventMate provides the tools needed
+                to discover events, register for them,
+                manage attendance and keep everything
+                organized in one place.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- GALLERY -->
+
+    <section
+        class="section"
+        id="gallery"
+    >
+
+        <div class="section-heading">
+
+            <h2>
+                Event Gallery
+            </h2>
+
+            <p>
+                Memories from our college events
+            </p>
+
+        </div>
+
+<div class="gallery-grid">
+
+    <img
+        src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80"
+        alt="College Event"
+    >
+
+    <img
+        src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80"
+        alt="College Celebration"
+    >
+
+    <img
+        src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80"
+        alt="College Festival"
+    >
+
+    <img
+        src="https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=800&q=80"
+        alt="College Activities"
+    >
+
+</div>
+      
+
+    </section>
+
+
+    <!-- CONTACT -->
+
+    <section
+        class="section"
+        id="contact"
+    >
+
+        <div class="contact-card">
+
+            <h2>
+                Contact EventMate
+            </h2>
+
+            <p>
+                📧 eventmate25@gmail.com
+            </p>
+
+            <p>
+                📞 +91 7300852311
+            </p>
+
+            <p>
+                📍 ITS Engineering College,
+                Greater Noida, Uttar Pradesh
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<footer>
+
+    <p>
+        🎓 EventMate
+    </p>
+
+    <p>
+        College Event Management Platform
+    </p>
+
+    <p>
+        © 2026 EventMate. All rights reserved.
+    </p>
+
+</footer>
+
+
+<script>
+
+    const API_URL =
+        "http://localhost:5000";
+
+
+    function checkLogin() {
+
+        const token =
+            localStorage.getItem("token");
+
+        const userString =
+            localStorage.getItem("user");
+
+
+        if (!token || !userString) {
+
+            window.location.href =
+                "login.html";
+
+            return false;
+        }
+
+
+        try {
+
+            const user =
+                JSON.parse(userString);
+
+
+            document.getElementById(
+                "userName"
+            ).textContent =
+                user.name || "Student";
+
+
+            document.getElementById(
+                "welcomeMessage"
+            ).textContent =
+                `Welcome, ${user.name || "Student"}!`;
+
+
+            const role =
+                String(user.role)
+                    .trim()
+                    .toLowerCase();
+
+
+            if (role === "admin") {
+
+                document.getElementById(
+                    "adminButton"
+                ).style.display =
+                    "inline-block";
+
+            }
+
+
+            return true;
+
+
+        } catch (error) {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            localStorage.removeItem(
+                "user"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return false;
+
+        }
+
+    }
+
+
+    async function loadEvents() {
+
+        const grid =
+            document.getElementById(
+                "eventsGrid"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/events`
+                );
+
+
+            const events =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    events.message ||
+                    "Unable to load events"
+                );
+
+            }
+
+
+            if (
+                !events ||
+                events.length === 0
+            ) {
+
+                grid.innerHTML = `
+
+                    <div class="info-card">
+
+                        <p>
+                            No upcoming events available.
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            grid.innerHTML = "";
+
+
+            events.forEach(event => {
+
+                const date =
+                    new Date(
+                        event.date
+                    ).toLocaleDateString(
+                        "en-IN",
+                        {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric"
+                        }
+                    );
+                 
+                const title = String(event.title).trim().toLowerCase();
+
+                let image;
+
+                if (title === "udghosh") {
+                    image = "traditional-event.jpeg";
+                } 
+                else if (title === "mata ki chowki") {
+                    image = "mata-ki-chowki.jpeg";
+                } 
+                else if (title === "saraswati pooja") {
+                    image = "saraswati-pooja.jpg";
+                } 
+                else if (title === "dandiya night") {
+                    image = "dandiya.jpeg";
+                } 
+                else if (title === "hackathon") {
+                    image = "hackathon.jpg";
+                } 
+                else {
+                    image = event.image || "traditional-event.jpeg";
+                }
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "event-card";
+
+
+                card.innerHTML = `
+
+                    <img
+                        class="event-image"
+                        src="${image}"
+                        alt="${event.title}"
+                        onerror="this.src='traditional-event.jpeg'"
+                    >
+
+                    <div class="event-content">
+
+                        <h3>
+                            ${event.title}
+                        </h3>
+<p class="event-date">
+                            📅 ${date}
+                        </p>
+
+                        <p>
+                            📍 ${event.venue}
+                        </p>
+
+                        <p>
+                            ${event.description || ""}
+                        </p>
+
+                        <button
+                            class="event-btn"
+                            onclick="
+                                viewEvent('${event._id}')
+                            "
+                        >
+                            View Event
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                grid.appendChild(
+                    card
+                );
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Events error:",
+                error
+            );
+
+
+            grid.innerHTML = `
+
+                <div class="info-card">
+
+                    <p>
+                        ⚠️ Unable to load events.
+                        Please try again later.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    function viewEvent(eventId) {
+
+        window.location.href =
+            `event.html?id=${eventId}`;
+
+    }
+
+
+    function scrollToEvents() {
+
+        document
+            .getElementById("events")
+            .scrollIntoView({
+                behavior: "smooth"
+            });
+
+    }
+
+
+    function goToMyEvents() {
+
+        window.location.href =
+            "my-events.html";
+
+    }
+
+
+    function goToAttendance() {
+
+        window.location.href =
+            "student-attendance.html";
+
+    }
+
+function goToPayments() {
+    window.location.href =
+        "my-payments.html";
+}
+
+
+    function logout() {
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        localStorage.removeItem(
+            "user"
+        );
+
+        window.location.href =
+            "login.html";
+
+    }
+
+
+    if (checkLogin()) {
+
+        loadEvents();
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contact</title>
+</head>
+<body>
+    <style>
+    body {
+            background: linear-gradient(120deg, #e3eafc 0%, #c9d6ff 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color:  lab(79.45% -8.63 -27.83);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            background:  #e1e8ec;
+            border-radius: 15px;
+            box-shadow: 0 4px 24px rgba(60, 80, 190, 0.07);
+            margin: 40px auto 40px auto;
+            padding: 30px 35px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.1rem;
+            letter-spacing: 2px;
+            color: #133b5c;
+        }
+        .home-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .home-link a {
+            color: #3768c3;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .home-link a:hover {
+            color: #224e90;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+        label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #3768c3;
+        }
+        input, textarea, select {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #cbd9fa;
+            border-radius: 7px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border: 1.5px solid #3768c3;
+        }
+        textarea {
+            resize: vertical;
+            height: 75px;
+        }
+        button {
+            background: #3768c3;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 11px 0;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 2px 14px rgba(55, 104, 195, 0.07);
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #224e90;
+        }
+        .help-desk {
+            margin-top: 26px;
+            padding: 16px 14px;
+            background: #e3eafc;
+            border-radius: 12px;
+            color: #133b5c;
+        }
+        .help-desk strong {
+            color: #3768c3;
+        }
+        h2 {
+            text-align: center;
+            text-decoration: underline;
+            text-decoration-thickness: inherit;
+            color: #cc82d7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="home-link">
+            <a href="homepage1.html">&larr; Back to Home</a>
+        </div>
+        <h1>Contact Eventmate</h1>
+        <form id="contactForm" method="post">
+            <label for="name">Your Name:</label>
+            <input type="text" name="name" id="name" required placeholder="Enter your name" />
+
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" id="email" required placeholder="your@email.com" />
+
+            <label for="phone">Phone Number:</label>
+            <input type="tel" name="phone" id="phone" required placeholder="Mobile number" />
+
+            <label for="event-type">Type of Event:</label>
+            <select id="event-type" name="event-type" required>
+                <option value="">Select an event</option>
+                <option value="freshers">Freshers Party</option>
+                <option value="udhgosh">Udhgosh</option>
+                <option value="mata_ki_chowki">Mata Ki Chowki</option>
+                <option value="saraswati_pooja">Saraswati Pooja</option>
+                <option value="dandiya_night">Dandiya Night</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="event-date">Event Date:</label>
+            <input type="date" name="event-date" id="event-date" required />
+
+            <label for="details">Event Details/Remarks:</label>
+            <textarea name="details" id="details" placeholder="Share more about your event"></textarea>
+            <h2>Our team will contact you soon :)</h2>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="help-desk">
+            <strong>Eventmate Help Desk</strong><br />
+            For assistance or queries, reach out to our support team.<br />
+            <strong>Help Desk Email:</strong> helpdesk@eventmate.com<br />
+            <strong>Contact Number:</strong> +91 7300852311
+        </div>
+    </div>
+
+    <script>
+        // AJAX form submission
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            // Basic validation: ensure all required fields filled
+            for (const [key, value] of formData.entries()) {
+                if (!value.trim()) {
+                    alert('Please fill all required fields.');
+                    return;
+                }
+            }
+
+            fetch('contact_process.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(data => {
+                    alert('Thank you! Your message has been sent.');
+                    form.reset();
+                })
+                .catch(error => {
+                    alert('Oops! Something went wrong. Please try again later.');
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
+</body>
+</html>

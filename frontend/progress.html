@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Progress | EventMate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #364fe2;
+      --primary-light: #7b88ff;
+      --bg: #f4f7fc;
+      --card-bg: #ffffff;
+      --text-main: #222;
+      --muted: #777;
+      --success: #22c55e;
+      --warn: #facc15;
+      --danger: #f97373;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top, #dbe4ff 0, #f4f7fc 40%, #f4f7fc 100%);
+      color: var(--text-main);
+    }
+    .wrapper {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 0 16px 40px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+    }
+    header p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+  
+      .home-link {
+            display: block;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .home-link a {
+            color: #3768c3;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .home-link a:hover {
+            color: #224e90;}
+    .event-select {
+      flex: 1 1 240px;
+    }
+    .event-select label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .event-select select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid #c9d4ff;
+      background: #f8f9ff;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .event-select select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px #364fe230;
+    }
+    .status-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf3;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+      margin-left: 8px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 2.2fr 1.5fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+    @media (max-width: 780px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .card h2 {
+      font-size: 1.1rem;
+      margin: 0 0 8px;
+      color: var(--primary);
+    }
+    .card small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .chip-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+    .chip {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+    }
+    .progress-wrapper {
+      margin-top: 14px;
+    }
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .progress-bar {
+      background: #e4e7ff;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 16px;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: inherit;
+      transition: width 0.8s ease;
+    }
+    .progress-badge {
+      position: absolute;
+      right: 8px;
+      top: -18px;
+      font-size: 0.7rem;
+      background: #111827;
+      color: #f9fafb;
+      padding: 3px 7px;
+      border-radius: 999px;
+      opacity: 0.8;
+    }
+    .timeline {
+      margin-top: 12px;
+      font-size: 0.86rem;
+      max-height: 160px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 8px;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+    .timeline-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 0.82rem;
+    }
+    .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      display: inline-block;
+    }
+    .badge.green { background: #ecfdf3; color: var(--success); }
+    .badge.yellow { background: #fef9c3; color: #92400e; }
+    .badge.red { background: #fee2e2; color: #b91c1c; }
+    .updates-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .updates-header h2 {
+      margin: 0;
+    }
+    .updates-list {
+      max-height: 170px;
+      overflow-y: auto;
+      margin-top: 4px;
+      padding-right: 4px;
+      font-size: 0.86rem;
+    }
+    .update-item {
+      border-radius: 10px;
+      padding: 7px 9px;
+      margin-bottom: 6px;
+      background: #f5f5ff;
+      border-left: 3px solid var(--primary);
+    }
+    .update-meta {
+      font-size: 0.73rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .update-text {
+      font-size: 0.87rem;
+    }
+    .update-form {
+      margin-top: 10px;
+      border-top: 1px dashed #e5e7eb;
+      padding-top: 8px;
+    }
+    .update-form label {
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+    }
+    .update-form textarea {
+      width: 100%;
+      min-height: 52px;
+      resize: vertical;
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid #cbd5f5;
+      font-family: inherit;
+      font-size: 0.86rem;
+      outline: none;
+    }
+    .update-form textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px #364fe230;
+    }
+    .update-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      gap: 8px;
+    }
+    .update-actions select {
+      flex: 0 0 130px;
+      padding: 5px;
+      border-radius: 999px;
+      border: 1px solid #d4d4ff;
+      background: #f9fafb;
+      font-size: 0.8rem;
+    }
+    .btn {
+      padding: 7px 16px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.83rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(55, 65, 194, 0.5);
+    }
+    .btn-primary:hover { background: #2434b8; }
+    .pill-small {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      background: #eef2ff;
+      color: #4338ca;
+    }
+  </style>
+</head>
+<body>
+   <div class="home-link">
+            <a href="homepage1.html">&larr; Back to Home</a>
+        </div>
+  <div class="wrapper">
+    <header>
+      <h1>Event Progress Dashboard</h1>
+      <p>Track live progress and latest updates for each EventMate college event.</p>
+    </header>
+
+    <div class="top-row">
+      <div class="event-select">
+        <label for="eventSelect">Select event</label>
+        <select id="eventSelect">
+          <option value="freshers">Freshers Party</option>
+          <option value="udhgosh">Udhgosh</option>
+          <option value="mata">Mata ki Chowki</option>
+          <option value="saraswati">Saraswati Pooja</option>
+          <option value="dandiya">Dandiya Night</option>
+        </select>
+      </div>
+      <div>
+        <span class="status-pill" id="overallStatus">
+          <span class="status-dot"></span>
+          Live & On Schedule
+        </span>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <!-- Left: main progress card -->
+      <section class="card">
+        <h2 id="eventTitle">Freshers Party</h2>
+        <small id="eventSubtitle">Welcome celebration for new students with music, fun games and interaction sessions.</small>
+
+        <div class="chip-row">
+          <span class="chip" id="chip-date">Date: 10 Aug</span>
+          <span class="chip" id="chip-venue">Venue: Auditorium</span>
+          <span class="chip" id="chip-type">Type: Cultural</span>
+        </div>
+
+        <div class="progress-wrapper">
+          <div class="progress-labels">
+            <span id="progressLabelText">Preparation Progress</span>
+            <span id="progressNumeric">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <span class="progress-badge" id="progressBadge">Planning</span>
+          </div>
+        </div>
+
+        <div class="badge-row">
+          <span class="badge green" id="badge-registered">Registered: 0</span>
+          <span class="badge yellow" id="badge-activities">Activities: 0 / 0</span>
+          <span class="badge red" id="badge-alert">No issues reported</span>
+        </div>
+
+        <div class="timeline" id="timeline">
+          <!-- Timeline items injected here -->
+        </div>
+      </section>
+
+      <!-- Right: live updates and new info -->
+      <section class="card">
+        <div class="updates-header">
+          <h2>Latest Updates</h2>
+          <span class="pill-small" id="lastUpdated">Last updated: just now</span>
+        </div>
+
+        <div class="updates-list" id="updatesList">
+          <!-- Updates injected here -->
+        </div>
+
+        <form class="update-form" id="updateForm">
+          <label for="updateText">Add new information / announcement</label>
+          <textarea id="updateText" placeholder="Example: Sound check scheduled at 4:30 PM, all dance teams report backstage."></textarea>
+          <div class="update-actions">
+            <select id="updateTag">
+              <option value="info">General</option>
+              <option value="schedule">Schedule</option>
+              <option value="venue">Venue</option>
+              <option value="urgent">Important</option>
+            </select>
+            <button type="submit" class="btn btn-primary">
+              + Add update
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const eventsData = {
+      freshers: {
+        title: "Freshers Party",
+        subtitle: "Welcome celebration for new students with music, fun games and interaction sessions.",
+        date: "10 Aug, 6:00 PM",
+        venue: "Main Auditorium",
+        type: "Cultural",
+        progress: 78,
+        phase: "In Progress",
+        registered: 120,
+        activitiesDone: 5,
+        totalActivities: 7,
+        alert: "Green room setup pending.",
+        alertType: "warn",
+        timeline: [
+          { time: "03:00 PM", text: "Decoration team completed stage backdrop." },
+          { time: "04:00 PM", text: "Sound & lights tested successfully." },
+          { time: "05:15 PM", text: "Anchors rehearsal completed." },
+          { time: "05:45 PM", text: "Entry gate banners placed." }
+        ],
+        updates: [
+          { tag: "schedule", text: "Entry for first years starts at 5:45 PM.", time: "Today 12:10 PM" },
+          { tag: "info", text: "Snacks counters will open after the welcome performance.", time: "Today 11:40 AM" }
+        ]
+      },
+      udhgosh: {
+        title: "Udhgosh",
+        subtitle: "Annual cultural fest with competitions, celebrity night, and food stalls.",
+        date: "22 Sept, Full Day",
+        venue: "Central Ground",
+        type: "Mega Fest",
+        progress: 52,
+        phase: "Planning",
+        registered: 340,
+        activitiesDone: 4,
+        totalActivities: 12,
+        alert: "Sponsorship confirmation awaited from 2 partners.",
+        alertType: "warn",
+        timeline: [
+          { time: "Yesterday", text: "Core team finalised events list and timings." },
+          { time: "Today", text: "Stage design concept approved." }
+        ],
+        updates: [
+          { tag: "venue", text: "Extra food stalls space requested near south gate.", time: "Today 10:20 AM" }
+        ]
+      },
+      mata: {
+        title: "Mata ki Chowki",
+        subtitle: "Devotional evening with bhajans, aarti and prasad distribution.",
+        date: "15 Oct, 7:00 PM",
+        venue: "Seminar Hall",
+        type: "Religious",
+        progress: 92,
+        phase: "Almost Ready",
+        registered: 95,
+        activitiesDone: 3,
+        totalActivities: 3,
+        alert: "No issues reported.",
+        alertType: "ok",
+        timeline: [
+          { time: "Yesterday", text: "Sound system and bhajan track list locked." },
+          { time: "Today", text: "Decoration material and flowers arranged." }
+        ],
+        updates: [
+          { tag: "schedule", text: "Aarti timing confirmed for 8:30 PM.", time: "Today 09:05 AM" }
+        ]
+      },
+      saraswati: {
+        title: "Saraswati Pooja",
+        subtitle: "Traditional pooja seeking blessings for knowledge and academics.",
+        date: "26 Jan, 9:00 AM",
+        venue: "Library Lawn",
+        type: "Religious",
+        progress: 38,
+        phase: "Early Planning",
+        registered: 60,
+        activitiesDone: 1,
+        totalActivities: 4,
+        alert: "Pooja items vendor confirmation pending.",
+        alertType: "warn",
+        timeline: [
+          { time: "This Week", text: "Pooja muhurat and priest finalised." }
+        ],
+        updates: [
+          { tag: "info", text: "Student volunteers required for seating arrangement.", time: "Yesterday 04:35 PM" }
+        ]
+      },
+      dandiya: {
+        title: "Dandiya Night",
+        subtitle: "Colorful garba and dandiya evening with live DJ and themed dress code.",
+        date: "Navratri Day 6, 7:30 PM",
+        venue: "Basketball Court",
+        type: "Cultural",
+        progress: 64,
+        phase: "In Progress",
+        registered: 180,
+        activitiesDone: 3,
+        totalActivities: 6,
+        alert: "Rain backup plan to be finalised.",
+        alertType: "warn",
+        timeline: [
+          { time: "Today", text: "DJ and sound check completed." },
+          { time: "Today", text: "Dandiya sticks ordered for all registered students." }
+        ],
+        updates: [
+          { tag: "urgent", text: "Dress code: Traditional only. Entry closes at 8:15 PM sharp.", time: "Today 01:05 PM" }
+        ]
+      }
+    };
+
+    const eventSelect = document.getElementById("eventSelect");
+    const eventTitle = document.getElementById("eventTitle");
+    const eventSubtitle = document.getElementById("eventSubtitle");
+    const chipDate = document.getElementById("chip-date");
+    const chipVenue = document.getElementById("chip-venue");
+    const chipType = document.getElementById("chip-type");
+    const progressFill = document.getElementById("progressFill");
+    const progressNumeric = document.getElementById("progressNumeric");
+    const progressBadge = document.getElementById("progressBadge");
+    const badgeRegistered = document.getElementById("badge-registered");
+    const badgeActivities = document.getElementById("badge-activities");
+    const badgeAlert = document.getElementById("badge-alert");
+    const overallStatus = document.getElementById("overallStatus");
+    const timelineEl = document.getElementById("timeline");
+    const updatesList = document.getElementById("updatesList");
+    const updateForm = document.getElementById("updateForm");
+    const updateText = document.getElementById("updateText");
+    const updateTag = document.getElementById("updateTag");
+    const lastUpdated = document.getElementById("lastUpdated");
+
+    function getStatusLabel(eventObj) {
+      if (eventObj.progress >= 90) return "Almost Complete";
+      if (eventObj.progress >= 60) return "On Track";
+      if (eventObj.progress >= 30) return "In Progress";
+      return "Planning";
+    }
+
+    function renderEvent(key) {
+      const ev = eventsData[key];
+      eventTitle.textContent = ev.title;
+      eventSubtitle.textContent = ev.subtitle;
+      chipDate.textContent = "Date: " + ev.date;
+      chipVenue.textContent = "Venue: " + ev.venue;
+      chipType.textContent = "Type: " + ev.type;
+
+      progressFill.style.width = ev.progress + "%";
+      progressNumeric.textContent = ev.progress + "%";
+      progressBadge.textContent = ev.phase + " • " + getStatusLabel(ev);
+
+      badgeRegistered.textContent = "Registered: " + ev.registered;
+      badgeActivities.textContent = "Activities: " + ev.activitiesDone + " / " + ev.totalActivities;
+
+      if (ev.alertType === "ok") {
+        badgeAlert.textContent = "No issues reported";
+        badgeAlert.className = "badge green";
+      } else if (ev.alertType === "warn") {
+        badgeAlert.textContent = ev.alert;
+        badgeAlert.className = "badge yellow";
+      } else {
+        badgeAlert.textContent = ev.alert;
+        badgeAlert.className = "badge red";
+      }
+
+      if (ev.progress >= 90) {
+        overallStatus.innerHTML = '<span class="status-dot"></span>Almost Finished';
+        overallStatus.style.background = "#ecfdf3";
+      } else if (ev.progress >= 50) {
+        overallStatus.innerHTML = '<span class="status-dot"></span>Live & On Schedule';
+        overallStatus.style.background = "#ecfdf3";
+      } else {
+        overallStatus.innerHTML = '<span class="status-dot"></span>Planning Stage';
+        overallStatus.style.background = "#fef9c3";
+      }
+
+      timelineEl.innerHTML = "";
+      ev.timeline.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "timeline-item";
+        div.innerHTML = '<div>' + item.text + '</div><div class="timeline-time">' + item.time + "</div>";
+        timelineEl.appendChild(div);
+      });
+
+      updatesList.innerHTML = "";
+      ev.updates.forEach(u => {
+        const div = document.createElement("div");
+        div.className = "update-item";
+        div.innerHTML =
+          '<div class="update-meta">[' +
+          u.tag.toUpperCase() +
+          "] • " +
+          u.time +
+          '</div><div class="update-text">' +
+          u.text +
+          "</div>";
+        updatesList.appendChild(div);
+      });
+    }
+
+    function getNiceTime() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, "0");
+      const m = now.getMinutes().toString().padStart(2, "0");
+      return "Today " + h + ":" + m;
+    }
+
+    eventSelect.addEventListener("change", () => {
+      renderEvent(eventSelect.value);
+      lastUpdated.textContent = "Last updated: " + getNiceTime();
+    });
+
+    updateForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = updateText.value.trim();
+      if (!text) return;
+      const key = eventSelect.value;
+      const ev = eventsData[key];
+      ev.updates.unshift({
+        tag: updateTag.value,
+        text,
+        time: getNiceTime()
+      });
+      renderEvent(key);
+      updateText.value = "";
+      lastUpdated.textContent = "Last updated: " + getNiceTime();
+    });
+
+    renderEvent("freshers");
+    lastUpdated.textContent = "Last updated: " + getNiceTime();
+  </script>
+</body>
+</html>

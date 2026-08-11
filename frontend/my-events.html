@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Events - EventMate</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+        .events-container {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(280px, 1fr)
+            );
+            gap: 25px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-card h2 {
+            color: #333;
+        }
+
+        .event-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .event-card strong {
+            color: #333;
+        }
+
+        .no-events {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+        }
+
+        .login-message {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .login-message a {
+            color: #667eea;
+            font-weight: bold;
+        }
+     .cancel-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+.cancel-btn:hover {
+    background: #b02a37;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <h1>My Registered Events</h1>
+        <p>Events you have registered for</p>
+    </header>
+
+
+    <div class="container">
+
+        <div id="eventsContainer">
+            <p>Loading your events...</p>
+        </div>
+
+    </div>
+
+
+    <script>
+        async function cancelRegistration(registrationId) {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please login first.");
+        return;
+    }
+
+    const confirmCancel = confirm(
+        "Are you sure you want to cancel this registration?"
+    );
+
+    if (!confirmCancel) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `http://localhost:5000/registrations/${registrationId}`,
+            {
+                method: "DELETE",
+
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            alert(data.message);
+            return;
+        }
+
+        alert("Registration cancelled successfully.");
+
+        // Refresh the page data
+        loadMyEvents();
+
+    } catch (error) {
+
+        console.error(
+            "Cancel registration error:",
+            error
+        );
+
+        alert(
+            "Unable to cancel registration."
+        );
+    }
+}
+
+        async function loadMyEvents() {
+
+            const token =
+                localStorage.getItem("token");
+
+
+            // Check login
+            if (!token) {
+
+                document.getElementById(
+                    "eventsContainer"
+                ).innerHTML = `
+                    <div class="login-message">
+                        <h2>Please login first</h2>
+
+                        <p>
+                            You need to login to see
+                            your registered events.
+                        </p>
+
+                        <a href="login.html">
+                            Go to Login
+                        </a>
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:5000/registrations/my",
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+                const registrations =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    document.getElementById(
+                        "eventsContainer"
+                    ).innerHTML = `
+                        <div class="no-events">
+                            <h2>${registrations.message}</h2>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                // No registrations
+                if (registrations.length === 0) {
+
+                    document.getElementById(
+                        "eventsContainer"
+                    ).innerHTML = `
+                        <div class="no-events">
+                            <h2>No Registered Events</h2>
+
+                            <p>
+                                You haven't registered
+                                for any events yet.
+                            </p>
+
+                            <a href="event.html">
+                                Browse Events
+                            </a>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                // Display registrations
+                let html = "";
+
+                registrations.forEach(
+                    registration => {
+
+                        const event =
+                            registration.event;
+
+                        const eventDate =
+                            new Date(event.date)
+                                .toLocaleDateString(
+                                    "en-IN",
+                                    {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric"
+                                    }
+                                );
+
+
+                       html += `
+    <div class="event-card">
+
+        <h2>
+            ${event.title}
+        </h2>
+
+        <p>
+            ${event.description}
+        </p>
+
+        <p>
+            <strong>
+                📍 Venue:
+            </strong>
+            ${event.venue}
+        </p>
+
+        <p>
+            <strong>
+                📅 Date:
+            </strong>
+            ${eventDate}
+        </p>
+
+        <p>
+            <strong>
+                Category:
+            </strong>
+            ${event.category}
+        </p>
+
+        <button
+            class="cancel-btn"
+            onclick="cancelRegistration('${registration._id}')"
+        >
+            Cancel Registration
+        </button>
+
+    </div>
+`;
+                    }
+                );
+
+
+                document.getElementById(
+                    "eventsContainer"
+                ).innerHTML = html;
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById(
+                    "eventsContainer"
+                ).innerHTML = `
+                    <div class="no-events">
+                        <h2>Something went wrong</h2>
+
+                        <p>
+                            Unable to load your events.
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+
+        loadMyEvents();
+
+    </script>
+
+</body>
+
+</html>
