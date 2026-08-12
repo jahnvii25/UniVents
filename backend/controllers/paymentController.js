@@ -1,4 +1,4 @@
-const Payment = require("../models/Payment");
+const Payment = require("../models/payment");
 const Event = require("../models/Event");
 
 // POST /payments/create
