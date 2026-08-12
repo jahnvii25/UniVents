@@ -1,5 +1,5 @@
 const Payment = require("../models/payment");
-const Event = require("../models/event");
+const Event = require("../models/Event");
 
 // POST /payments/create
 const createPayment = async (req, res) => {

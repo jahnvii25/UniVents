@@ -1,5 +1,5 @@
 const Registration = require("../models/registration");
-const Event = require("../models/event");
+const Event = require("../models/Event");
 
 // POST /registrations/:eventId
 const registerForEvent = async (req, res) => {
