@@ -1,6 +1,6 @@
-const Attendance = require("../models/Attendance");
-const Event = require("../models/Event");
-const Registration = require("../models/Registration");
+const Attendance = require("../models/attendance");
+const Event = require("../models/event");
+const Registration = require("../models/registration");
 
 
 // ==========================================
