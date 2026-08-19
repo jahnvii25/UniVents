@@ -295,7 +295,7 @@ async function loadEvents() {
 
         const response =
             await fetch(
-                "http://localhost:5000/events"
+                "https://univents-0kp4.onrender.com/events"
             );
 
 
@@ -596,7 +596,7 @@ async function registerForEvent(
 
         const response =
             await fetch(
-                `http://localhost:5000/registrations/${eventId}`,
+                `https://univents-0kp4.onrender.com/registrations/${eventId}`,
                 {
 
                     method: "POST",

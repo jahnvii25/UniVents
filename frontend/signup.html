@@ -172,108 +172,64 @@
         </div>
 
     </div>
+<script>
+document.getElementById("signupForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const message = document.getElementById("message");
 
-    <script>
+    // Check passwords
+    if (password !== confirmPassword) {
+        message.style.color = "red";
+        message.textContent = "Passwords do not match.";
+        return;
+    }
 
-        document
-            .getElementById("signupForm")
-            .addEventListener("submit", async function (e) {
+    try {
+        const response = await fetch(
+            "https://univents-0kp4.onrender.com/users/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password
+                })
+            }
+        );
 
-                e.preventDefault();
+        const data = await response.json();
 
-                const name =
-                    document.getElementById("name").value.trim();
+        if (!response.ok) {
+            message.style.color = "red";
+            message.textContent = data.message || "Registration failed.";
+            return;
+        }
 
-                const email =
-                    document.getElementById("email").value.trim();
+        message.style.color = "green";
+        message.textContent = "Account created successfully!";
 
-                const password =
-                    document.getElementById("password").value;
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1500);
 
-                const confirmPassword =
-                    document.getElementById("confirmPassword").value;
+    } catch (error) {
+        console.error(error);
 
-                const message =
-                    document.getElementById("message");
+        message.style.color = "red";
+        message.textContent = "Unable to connect to server.";
+    }
+});
+</script>
 
-
-                // Check passwords
-                if (password !== confirmPassword) {
-
-                    message.style.color = "red";
-
-                    message.textContent =
-                        "Passwords do not match.";
-
-                    return;
-                }
-
-
-                try {
-
-                    const response = await fetch(
-                        "http://localhost:5000/users/register",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-
-                            body: JSON.stringify({
-                                name: name,
-                                email: email,
-                                password: password
-                            })
-                        }
-                    );
-
-
-                    const data = await response.json();
-
-
-                    if (!response.ok) {
-
-                        message.style.color = "red";
-
-                        message.textContent =
-                            data.message;
-
-                        return;
-                    }
-
-
-                    message.style.color = "green";
-
-                    message.textContent =
-                        "Account created successfully!";
-
-
-                    // Redirect to login
-                    setTimeout(() => {
-
-                        window.location.href =
-                            "login.html";
-
-                    }, 1500);
-
-
-                } catch (error) {
-
-                    console.error(error);
-
-                    message.style.color = "red";
-
-                    message.textContent =
-                        "Unable to connect to server.";
-
-                }
-
-            });
-
-    </script>
-
+   
 </body>
 
 </html>

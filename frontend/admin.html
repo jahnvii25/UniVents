@@ -611,7 +611,7 @@ async function loadStats() {
 
         const eventsResponse =
             await fetch(
-                "http://localhost:5000/events"
+                "https://univents-0kp4.onrender.com/events"
             );
 
         const events =
@@ -633,7 +633,7 @@ async function loadStats() {
 
             const registrationResponse =
                 await fetch(
-                    `http://localhost:5000/registrations/event/${event._id}`,
+                    `https://univents-0kp4.onrender.com/registrations/event/${event._id}`,
                     {
                         headers: {
                             Authorization:
@@ -655,7 +655,7 @@ async function loadStats() {
 
             const attendanceResponse =
                 await fetch(
-                    `http://localhost:5000/attendance/event/${event._id}`,
+                    `https://univents-0kp4.onrender.com/attendance/event/${event._id}`,
                     {
                         headers: {
                             Authorization:
